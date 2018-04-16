@@ -81,8 +81,9 @@ def gaussiana(mtz):
 ga = gaussiana(byne)
 		
 #Aplicacion de la transformada a la gaussiana 
-
+transgau= transformada(ga)
 #Convolucion entre las transformadas (gaussiana e imagen)
+con= transgau*transima
 
 #Aplicacion de la transformada inversa al resultado de lo anterior
 
