@@ -1,10 +1,10 @@
 import numpy as np
 import matplotlib.pylab as plt 
-from PIL import Image, ImageOps
+from PIL import Image, ImageOps 
 
-#subir la imagen como una matriz (se debe poner entre comillas la ubicacion de la imagen)
+#subir la imagen como una matriz blanco y negro (se debe poner entre comillas la ubicacion de la imagen)
 def sube_imagen(dire):
-	return Image.open(str(dire))
+	return Image.open(dire)
 
 color = sube_imagen('jhh.png')
 
@@ -13,14 +13,10 @@ def byn(imag):
 	b_n= ImageOps.grayscale(imag)
 	b_n.save('ima.png')
 	#Subo nueva imagen a blanco y negro para obtener el array
-	
+	imab_n = plt.imread('ima.png')
 	return imab_n
 
 byne = byn(color)
-
-plt.figure()
-plt.imshow(byne)
-plt.show()
 
 #Transformada de Fourier en dos dimensiones  
 #Parametro m: matriz de la imagen en blanco y negro o matriz de la gaussiana 
@@ -43,9 +39,9 @@ def transformada(mtz):
 			mtrans[i,j] = tran_act
 	return mtrans
 
-transima = transformada(byne)
+#Aplicacion de la transformada a la imagen 
+transim = transformada(byne)
 
-print transima
 
 #Gaussiana en dos dimensiones generada a partir de la matriz de la imagen que entra como parametro
 def gaussiana(mtz):
@@ -83,13 +79,14 @@ def gaussiana(mtz):
 	return mgauss
 
 ga = gaussiana(byne)
-		
+
 #Aplicacion de la transformada a la gaussiana 
 transgau= transformada(ga)
-#Convolucion entre las transformadas (gaussiana e imagen)
-con= transgau*transima
 
-#Funcion que calcula la tranformada inversa 
+#Convolucion entre las transformadas (gaussiana e imagen)
+con= transgau*transim
+
+#Funcion que retorna la inversa de la transformada de Fourier
 def invtra(mtz):
 	#Dimensiones de la matriz de la imagen 
 	(M,N) = np.shape(mtz)
@@ -108,12 +105,13 @@ def invtra(mtz):
 			
 			mtrans[m,n] = tran_act
 	return mtrans
-#Aplicacion de la transformada inversa al resultado de lo anterior entra como parametro la matriz de la convoluncion anteriormente realizada 
-transinv = invtra(transima)
 
-#Grafica de la imagen final con suavizado 
-plt.figure()
-plt.imshow(transinv, cmap="gray")
-plt.show()
+#Aplicacion de la transformada inversa al resultado de lo anterior entra como parametro la matriz de la convoluncion anteriormente realizada 
+
+rta = invtra(con)
+
+#plt.figure()
+#plt.imread(rta)
+#plt.show()
 #plt.save("suave.png")
 
