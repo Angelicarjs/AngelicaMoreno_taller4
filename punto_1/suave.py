@@ -6,8 +6,7 @@ from PIL import Image, ImageOps
 def sube_imagen(dire):
 	return Image.open(str(dire))
 
-
-color = sube_imagen('ult.png')
+color = sube_imagen('jh.png')
 
 #Cambio de matriz de 3d (color) a matriz 2d (blanco y negro) 
 def byn(imag):
@@ -29,44 +28,62 @@ def transformada(mtz):
 	
 	#Matriz donde se guarda la transformada 
 	mtrans = np.zeros((M,N), dtype = complex) 
-
-	k = np.linspace(0.0, N-1, N)
-	j = np.linspace(0.0, M-1, M)
-	for m in range(M):
-		for n in range (N):
-			a = k*(float(n)/float(N))
-			b = j*(float(m)/float(M))
-			expo = (-1j)*(2.0)*(3.1416)*(float(a+b))
-			tran_act = np.sum(mtz[m,n]*np.exp(expo))
-
-		mtrans[m,n] = tran_act
-
+	for i in range(M):
+		for j in range(N):
+			tran_act = 0.0
+			for m in range(M):
+				for n in range (N):
+					a = i*(float(n)/float(N))
+					b = j*(float(m)/float(M))
+					expo = (-1j)*(2.0)*(3.1416)*(float(a+b))
+					tran_act += mtz[m,n]*np.exp(expo)
+			
+			mtrans[m,n] = tran_act
 	return mtrans
 
-#Gaussiana en dos dimensiones
-def transgaus(m):
+#Gaussiana en dos dimensiones generada a partir de la matriz de la imagen que entra como parametro
+def gaussiana(mtz):
 
 	#Dimensiones de la matriz de la imagen 
-	(M,N) = np.shape(m)
+	(M,N) = np.shape(mtz)
 
+	#Matriz donde se guarda la gaussiana
+	mgauss = np.zeros((M,N), dtype = complex)
+	
 	#Da los centros de la imagen que utilizare en la gaussiana y los guarda en variables globales
+	yO = 0.0
+	xO = 0.0
+
 	if(M%2 == 0):
 		yO = M/2
 	else: 
 		yO = (M/2)+1
- 
+ 	
 	if(N%2 == 0):
 		xO = N/2
 
 	else: 
 		xO = (N/2)+1
- 
+ 	
+	print yO, xO, "dimension", M,N
+
+	#ancho de la gaussiana 
+	sigma = 0.3
 	
+	A = 1.0 / (np.sqrt(2.0*3.1416*sigma*sigma))
+	for y in range(M):
+		for x in range(N):
+			gx = float((x-xO)**2)/2.0*sigma*sigma
+			gy = float((y-yO)**2)/2.0*sigma*sigma
+			mgauss[y,x] = A*(np.exp(-(gx+gy)))
+	return mgauss
+
+ga = gaussiana(byne)
+		
 #Aplicacion de la transformada a la gaussiana 
 
 #Convolucion entre las transformadas (gaussiana e imagen)
 
-#Aplicacion de la transformada inversa al resultado de lo anterior 
-
+#Aplicacion de la transformada inversa al resultado de lo anterior
 
 
